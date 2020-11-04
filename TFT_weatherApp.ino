@@ -35,7 +35,7 @@ NTPClient timeClient(ntpUDP);
 
 // Open Weather Map API server name
 const char server[] = "api.openweathermap.org"; // server name
-String nameOfCity = "Deggendorf,DE"; // city name and country code
+String nameOfCity = "Leipzig,DE"; // city name and country code
 String apiKey = "your_api_key"; // key that you get when you register on the OWM site // your_API_key
 
 // macro and variables used for parsing JSON data
@@ -55,11 +55,11 @@ void printText(int x, int y, String text, uint8_t textSize = 1, uint8_t textAlli
    *    - textSize    text size can be one of these values 1, 2, 3, 4, 5
    *    - textAllign  text allign can be 1 - left align, 2 - center and 3 - right align
    *    - lineLenght  this should be used for line lenght of text, but does not works as shoud - TODO
-   *    
+   *
    *  Returns:
    *  nothing
    */
-  
+
   uint8_t newTextSize = textSize;
   uint8_t real_x = 0;
   uint32_t stringLength = text.length();
@@ -170,12 +170,12 @@ void printTime(uint16_t x, uint16_t y, uint32_t dateTime, uint8_t textSize, uint
    *  - dateTime    epoch timestamp (unix timestamp)
    *  - textSize    text size can be one of these values 1, 2, 3, 4, 5
    *  - textAllign  text allign can be 1 - left align, 2 - center and 3 - right align
-   *  - lineLenght  this should be used for line lenght of text, but does not works as shoud - TODO  
-   *  
-   *  Retruns:
+   *  - lineLenght  this should be used for line lenght of text, but does not works as shoud - TODO
+   *
+   *  Returns:
    *  nothing
    */
-   
+
   time_t t = dateTime; // dateTime is epoch timestamp
   String twoDots = ":";
   String mytime = String(checkZero(hour(t))) + twoDots + String(checkZero(minute(t))) + twoDots + String(checkZero(second(t)));
@@ -190,16 +190,16 @@ void printDayAndDate(uint16_t x, uint16_t y, uint32_t dateTime, uint8_t textSize
    *  - dateTime    epoch timestamp (unix timestamp)
    *  - textSize    text size can be one of these values 1, 2, 3, 4, 5
    *  - textAllign  text allign can be 1 - left align, 2 - center and 3 - right align
-   *  - lineLenght  this should be used for line lenght of text, but does not works as shoud - TODO  
-   *  
-   *  Retruns:
+   *  - lineLenght  this should be used for line lenght of text, but does not works as shoud - TODO
+   *
+   *  Returns:
    *  nothing
    */
-  
+
   time_t t = dateTime; // dateTime is epoch timestamp
   String daysOfWeek[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-  String monthNames[12] = {"January ", "February ", "March ", "April ", "May ", "June ", "Jully ", "August ", "September ", "October ", "November ", "Dececember "};
-  
+  String monthNames[12] = {"January ", "February ", "March ", "April ", "May ", "June ", "July ", "August ", "September ", "October ", "November ", "Dececember "};
+
   String dayName = daysOfWeek[weekday(t) - 1];
   String monthName = monthNames[month(t) - 1];
 
@@ -212,11 +212,11 @@ String checkZero(uint32_t number) {
   /*  This function is used to check if the unsigned integer number is a single digit, and to add zero before single digit number
    *  Argument:
    *  - number      unsigned ingeger number
-   *  
+   *
    *  Returns:
    *  String        String made from unsigned integer number
    */
-   
+
   char buf[10];
   if (number < 10) {
     return "0" + String(number);
@@ -231,11 +231,11 @@ String checkZeroTemp(float number) {
    *  This function convert signed float number (number from OWM API) into integer and adds zero before single digit number
    *  Argument:
    *  - number      signed float number
-   *  
+   *
    *  Returns:
    *  - String        String made from unsigned integer number
    */
-   
+
   int num = int(number);
   if (num >= 0 && num < 10) {
     return "0" + String(num);
@@ -252,11 +252,11 @@ void initializeLCD() {
   /*  This function is used to turn ON the LCD and to initialize dsply object
    *  Arguments:
    *  none
-   *  
+   *
    *  Returns:
    *  nothing
    */
-   
+
   // turn ON the dispaly
   pinMode(15, OUTPUT);    // Backlight pin of the display is connecte to this pin of ESP32
   digitalWrite(15, LOW);  // we have to drive this pin LOW in order to turn ON the display
@@ -265,9 +265,9 @@ void initializeLCD() {
   dsply.init();
   dsply.fillScreen(TFT_BLACK);    //  fill the screen with black color
   dsply.setTextColor(TFT_GREEN);  //  set the text color
-  
-  //dsply.setFreeFont(FSS9);      //  you can use some other font, 
-                                  //  but you have to change positions of every element, 
+
+  //dsply.setFreeFont(FSS9);      //  you can use some other font,
+                                  //  but you have to change positions of every element,
                                   //  because for different font there are different text sizes
 }
 
@@ -276,7 +276,7 @@ void initializeTime(uint32_t timezone) {
    *  Arguments:
    *  - timezone    unsigned integer number representing seconds offset of specific timezone from UTC time
    */
-   
+
   timeClient.begin();
   timeClient.setTimeOffset(timezone);
 }
@@ -285,11 +285,11 @@ uint32_t readTimeDate() {
   /*  This function is used to read the time form NTP API
    *  Arguments:
    *  none
-   *  
+   *
    *  Returns:
    *  epoch timestamp from NTP API
    */
-   
+
   while (!timeClient.update()) {
     timeClient.forceUpdate();
   }
@@ -300,12 +300,12 @@ void updateTime() {
   /*  This function is used to dusplay time on the screen
    *  Arguments:
    *  none
-   *  
+   *
    *  Returns:
    *  none
    */
-   
-  dsply.fillRect(0, 71, 240, 30, TFT_BLACK); 
+
+  dsply.fillRect(0, 71, 240, 30, TFT_BLACK);
   printTime(0, 72, readTimeDate(), 4, 2);
 }
 
@@ -313,16 +313,16 @@ void connectToWiFi() {
   /*  This function is used to connect to local WiFi network
    *  Arguments:
    *  none
-   *  
-   *  Retruns:
+   *
+   *  Returns:
    *  nothing
    */
-   
+
   WiFi.begin(ssid, pass);
   printText(3, 3, "connecting...", 1, 1); delay(1000);
-  
+
   while (WiFi.status() != WL_CONNECTED) { delay(500); }
-  
+
   printText(3, 23, "WiFi Connected", 1, 1); delay(1000);
   printWiFiStatus(); // call the function to display wifi status on the screen
 }
@@ -331,11 +331,11 @@ void printWiFiStatus() {
   /*  This function is used to print the status of wifi connection
    *  Arguments:
    *  none
-   *  
+   *
    *  Returns:
    *  nothing
    */
-   
+
   // print the SSID of the network you're attached to:
   printText(3, 33, "SSID: ", 1, 1); delay(10);
   printText(35, 33, String(WiFi.SSID()), 1, 1); delay(10);
@@ -343,7 +343,7 @@ void printWiFiStatus() {
   // print your WiFi shield's IP address:
   IPAddress ip = WiFi.localIP();
   printText(3, 53, "IP Address: ", 1, 1); delay(10);
-  
+
   String cont = "";
   for (int i = 0; i < 4; i++) {
     cont += ip[i];
@@ -364,11 +364,11 @@ void showWeatherIcon(String weather) {
   /*  This function is used for displaying weather icons
    *  Arguments
    *  - weather   This is code name for the image of the specific weather used in OWM API
-   *  
+   *
    *  Returns:
    *  nothing
    */
-   
+
   dsply.setSwapBytes(true); // need to swap bytes because image is inverted
   if (weather == "11d" || weather == "11n") {
     dsply.pushImage(20, 118, image_width, image_width, thunderstorm);
@@ -413,8 +413,8 @@ void showMoonIcon(uint16_t angle) {
   /*  This function is used to diplay moon icon on the screen
    *  Arguments:
    *  - angle         age of the moon
-   *  
-   *  Retruns:
+   *
+   *  Returns:
    *  nothing
    */
 
@@ -478,16 +478,16 @@ void showPage(uint32_t dateTime, String city, float temp, float humidity, String
    *  - city                  city name for weather data
    *  - temp                  temperature data
    *  - humidity              humidity data
-   *  - weather               the name of weather from OWM API 
+   *  - weather               the name of weather from OWM API
    *  - weatherDescription    the name of the weather condition (long version)
-   *  - sunrise               epoch timestamp of sunrise 
-   *  - sunset                epoch timestamp of sunset 
+   *  - sunrise               epoch timestamp of sunrise
+   *  - sunset                epoch timestamp of sunset
    *  - weatherCode           the code name of image used in OWM API
-   *  
-   *  Retruns:
+   *
+   *  Returns:
    *  nothing
    */
-  
+
   dsply.fillScreen(TFT_BLACK); // clear the screen
 
   printText(0, 3, city, 3, 2);  // city name
@@ -518,7 +518,7 @@ void showPage(uint32_t dateTime, String city, float temp, float humidity, String
   uint8_t illumination = currentMoon.percentLit * 100;
   showMoonIcon(angle);    // show moon icon
   String illum = "Illumination: " + String(illumination) + procent;
-  String age = "Age: " + String(int(angle / 30)) + " day(s)"; 
+  String age = "Age: " + String(int(angle / 30)) + " day(s)";
   printText(100, 265, "Phase of the Moon:");
   printText(100, 280, age);   //  moon age
   printText(100, 295, illum); //  moon illumination
@@ -528,11 +528,11 @@ void makehttpRequest() {
   /*  This function is used to make http request to request data from OWM API
    *  Arguments:
    *  none
-   *  
+   *
    *  Returns:
    *  nothing
    */
-  
+
   dsply.fillScreen(TFT_BLACK);
   // close any connection before send a new request to
   // allow client make connection to server
@@ -543,18 +543,18 @@ void makehttpRequest() {
   if (client.connect(server, 80)) {
     // send the HTTP PUT request:
     String t1 = "GET /data/2.5/forecast?q=" + nameOfCity + "&APPID=" + apiKey + "&mode=json&units=metric&cnt=2 HTTP/1.1";
-    String t2 = "Host: api.openweathermap.org"; 
-    String t3 = "User-Agent: ArduinoWiFi/1.1"; 
+    String t2 = "Host: api.openweathermap.org";
+    String t3 = "User-Agent: ArduinoWiFi/1.1";
     String t4 = "Connection: close";
-    client.println(t1); 
-    client.println(t2); 
-    client.println(t3); 
-    client.println(t4); 
+    client.println(t1);
+    client.println(t2);
+    client.println(t3);
+    client.println(t4);
     client.println();
-    
-    printText(3, 33, t1, 1, 1); 
+
+    printText(3, 33, t1, 1, 1);
     printText(3, 73, t2, 1, 1);
-    printText(3, 93, t3, 1, 1); 
+    printText(3, 93, t3, 1, 1);
     printText(3, 113, t4, 1, 1); delay(1);
 
     unsigned long timeout = millis();
@@ -574,7 +574,7 @@ void makehttpRequest() {
        * close curly brackets, this means we can determine
        * when a json is completely received  by counting
        * the open and close occurences,
-       */ 
+       */
       if (c == '{') {
         startJson = true; // set startJson true to indicate json message has started
         jsonend++;
@@ -604,11 +604,11 @@ void parseJson(const char * jsonString) {
   /*  This function is used to parse JSON data
    *  Arguments:
    *  jsonString      constant char array containing the JSON data from OWM API
-   *  
+   *
    *  Returns:
    *  nothing
    */
-  
+
   //StaticJsonDocument<4000> doc;
   const size_t bufferSize = 2 * JSON_ARRAY_SIZE(1) + JSON_ARRAY_SIZE(2) + 4 * JSON_OBJECT_SIZE(1) + 3 * JSON_OBJECT_SIZE(2) + 3 * JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(5) + 2 * JSON_OBJECT_SIZE(7) + 2 * JSON_OBJECT_SIZE(8) + 720;
   DynamicJsonDocument doc(bufferSize);
@@ -648,13 +648,13 @@ void page(uint32_t timezone, String city, float temp, float humidity, String wea
    *  - city                  city name for weather data
    *  - temp                  temperature data
    *  - humidity              humidity data
-   *  - weather               the name of weather from OWM API 
+   *  - weather               the name of weather from OWM API
    *  - weatherDescription    the name of the weather condition (long version)
    *  - sunrise               epoch timestamp of sunrise timestamp
    *  - sunset                epoch timestamp of sunset timestamp
    *  - weatherCode           the code name of image used in OWM API
-   *  
-   *  Retruns:
+   *
+   *  Returns:
    *  nothing
    */
   initializeTime(timezone);  // we need to pass timezone offset here
@@ -681,10 +681,10 @@ void loop() {
     last_update_second = time_T;
     counter++;
   }
-  
+
   if(counter > weather_interval) {
     // update weather every hour
     makehttpRequest();
-    counter = 0;    
+    counter = 0;
   }
 }
